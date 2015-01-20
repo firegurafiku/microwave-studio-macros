@@ -108,7 +108,7 @@ Sub Main ()
 				xx = x*cosF + y*sinF
 				yy = x*sinF - y*cosF
 
-				' Than, shift. In that order.
+				' Then, shift. In that order.
 				xx = xx + startPointX
 				yy = yy + startPointY
 
