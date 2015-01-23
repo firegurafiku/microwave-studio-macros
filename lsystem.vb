@@ -4,8 +4,8 @@ Option Explicit
 Sub Main()
 	BeginHide
 	StoreDoubleParameter "lsystem_depth",   4
-	StoreDoubleParameter "lsystem_width",   4
-	StoreDoubleParameter "lsystem_height",  4
+	StoreDoubleParameter "lsystem_width",   0.1
+	StoreDoubleParameter "lsystem_height",  0
 	StoreDoubleParameter "lsystem_step",    1
 	StoreDoubleParameter "lsystem_angle_n", 6
 	StoreDoubleParameter "lsystem_axiom",   0
