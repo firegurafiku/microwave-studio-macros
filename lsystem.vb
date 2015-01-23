@@ -1,21 +1,21 @@
 ' L-system
 
 Option Explicit
-Sub Main () 
-	'
+Sub Main ()
 	BeginHide
 	StoreDoubleParameter "lsystem_depth",   4
 	StoreDoubleParameter "lsystem_width",   4
 	StoreDoubleParameter "lsystem_height",  4
 	StoreDoubleParameter "lsystem_step",    1
 	StoreDoubleParameter "lsystem_angle_n", 6
-	StoreParameter       "lsystem_axiom",   ""
-	StoreParameter       "lsystem_rules",   ""
-	SetParameterDescription("lsystem_axiom", "F")
-	SetParameterDescription("lsystem_rules", "F = F-F++F-F")
+	StoreDoubleParameter "lsystem_axiom",   0
+	StoreDoubleParameter "lsystem_rules",   0
+
+	' Thank you CST for leaving me nothing but...
+	SetParameterDescription "lsystem_axiom", "F"
+	SetParameterDescription "lsystem_rules", "F = F-F++F-F"
 	EndHide
 
-	'
 	Dim lsystemDepth As Integer
 	Dim lsystemWidth As Double
 	Dim lsystemHeight As Double
@@ -48,6 +48,8 @@ Sub Main ()
 	Set stackHashX = CreateObject("Scripting.Dictionary")
 	Set stackHashY = CreateObject("Scripting.Dictionary")
 	Set stackHashA = CreateObject("Scripting.Dictionary")
+
+	'
 	lsystemDepth  = CInt(RestoreDoubleParameter("lsystem_depth"))
 	lsystemWidth  = RestoreDoubleParameter("lsystem_width")
 	lsystemHeight = RestoreDoubleParameter("lsystem_height")
@@ -95,7 +97,7 @@ Sub Main ()
 			curveIndex = curveIndex + 1
 			Curve.NewCurve "3D-Analytical"
 			Polygon3D.Reset
-			Polygon3D.Name  "lsystem_curve" & curveIndex
+			Polygon3D.Name  "curve" & curveIndex
 			Polygon3D.Curve "3D-Analytical"
 			Polygon3D.Point x, y, 0
 
@@ -107,20 +109,17 @@ Sub Main ()
 
 			With TraceFromCurve
 				.Reset
-				.Name "lsystem_solid" & curveIndex
-				.Component "component1"
-				.Material "Vacuum"
-				.Curve "3D-Analytical:lsystem_curve" & curveIndex
-				.Thickness "0.1"
-				.Width "0.1"
-				.RoundStart "True"
-				.RoundEnd "True"
-				.GapType "2"
+				.Name       "solid" & curveIndex
+				.Component  "lsystem"
+				.Material   "Vacuum"
+				.Curve      "3D-Analytical:curve" & curveIndex
+				.Thickness  lsystemHeight
+				.Width      lsystemWidth
+				.RoundStart True
+				.RoundEnd   True
+				.GapType    2
 				.Create
 			End With
-			
-
-
 		ElseIf symbol = "f" Then
 			x = x + lsystemStep * Cos(angle)
 			y = y + lsystemStep * Sin(angle)
@@ -135,7 +134,6 @@ Sub Main ()
 			stackHashY(stackTip) = y
 			stackHashA(stackTip) = angleN
 			stackTip = stackTip + 1
-
 		ElseIf symbol = "]" Then
 			stackTip = stackTip - 1
 			x = stackHashX(stackTip)
@@ -146,7 +144,8 @@ Sub Main ()
 
 	If curveIndex > 1 Then
 		For i = 2 To curveIndex
-			Solid.Add "component1:lsystem_solid1", "component1:lsystem_solid" & i
+			Solid.Add "lsystem:solid1", "lsystem:solid" & i
 		Next
 	End If
 End Sub
+
