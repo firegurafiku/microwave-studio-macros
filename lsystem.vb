@@ -41,6 +41,13 @@ Sub Main ()
 	Set rulesHash = CreateObject("Scripting.Dictionary")
 
 	'
+	Dim stackTip As Integer
+	Dim stackHashX
+	Dim stackHashY
+	Dim stackHashA
+	Set stackHashX = CreateObject("Scripting.Dictionary")
+	Set stackHashY = CreateObject("Scripting.Dictionary")
+	Set stackHashA = CreateObject("Scripting.Dictionary")
 	lsystemDepth  = CInt(RestoreDoubleParameter("lsystem_depth"))
 	lsystemWidth  = RestoreDoubleParameter("lsystem_width")
 	lsystemHeight = RestoreDoubleParameter("lsystem_height")
@@ -80,6 +87,7 @@ Sub Main ()
 	angleN = 0
 	angle  = 0
 	curveIndex = 0
+	stackTip = 0
 	For i = 1 To Len(programSource)
 		symbol = Mid(programSource, i, 1)
 
@@ -123,9 +131,16 @@ Sub Main ()
 			angleN = angleN - 1
 			angle = 2*PI * angleN / lsystemAngleN
 		ElseIf symbol = "[" Then
+			stackHashX(stackTip) = x
+			stackHashY(stackTip) = y
+			stackHashA(stackTip) = angleN
+			stackTip = stackTip + 1
 
 		ElseIf symbol = "]" Then
-
+			stackTip = stackTip - 1
+			x = stackHashX(stackTip)
+			y = stackHashY(stackTip)
+			angleN = stackHashA(stackTip)
 		End If
 	Next
 
