@@ -23,6 +23,7 @@ Sub Main()
 	Dim lsystemAngleN    As Integer
 	Dim lsystemAxiom     As String
 	Dim lsystemRules     As String
+	Dim simpleRendering  As Boolean
 	Dim ruleItem         As String
 	Dim ruleComponents() As String
 	Dim programSource    As String
@@ -86,63 +87,108 @@ Sub Main()
 		programTarget = ""
 	Next
 
+
+	'
+	simpleRendering = True
+	If InStr(1, programSource, "f") <> 0 Or _
+       InStr(1, programSource, "[") <> 0 Or _
+       InStr(1, programSource, "]") <> 0 Then
+		simpleRendering = False
+	End If
+
 	curveIndex = 0
 	stackTip   = 0
 	tortoiseX  = 0
 	tortoiseY  = 0
 	tortoiseA  = 0
 	tortoiseAngle = 0
-	For i = 1 To Len(programSource)
-		symbol = Mid(programSource, i, 1)
+	If simpleRendering Then
+		Polygon3D.Reset
+		Polygon3D.Curve "lsystem"
+		Polygon3D.Name  "curve1"
 
-		If symbol = "F" Then
-			curveIndex = curveIndex + 1
-			Curve.NewCurve "3D-Analytical"
-			Polygon3D.Reset
-			Polygon3D.Name  "curve" & curveIndex
-			Polygon3D.Curve "3D-Analytical"
-			Polygon3D.Point tortoiseX, tortoiseY, 0
+		Polygon3D.Point tortoiseX, tortoiseY, 0
+		For i = 1 To Len(programSource)
+			symbol = Mid(programSource, i, 1)
 
-			tortoiseAngle = 2*PI * tortoiseA / lsystemAngleN
-			tortoiseX = tortoiseX + lsystemStep * Cos(tortoiseAngle)
-			tortoiseY = tortoiseY + lsystemStep * Sin(tortoiseAngle)
+			If symbol = "F" Then
+				tortoiseAngle = 2*PI * tortoiseA / lsystemAngleN
+				tortoiseX = tortoiseX + lsystemStep * Cos(tortoiseAngle)
+				tortoiseY = tortoiseY + lsystemStep * Sin(tortoiseAngle)
+				Polygon3D.Point tortoiseX, tortoiseY, 0
+			ElseIf symbol = "+" Then
+				tortoiseA = tortoiseA + 1
+			ElseIf symbol = "-" Then
+				tortoiseA = tortoiseA - 1
+			End If
+		Next
 
-			Polygon3D.Point tortoiseX, tortoiseY, 0
-			Polygon3D.Create
+		Polygon3D.Create
+		With TraceFromCurve
+			.Reset
+			.Name       "solid1"
+			.Component  "lsystem"
+			.Material   "Vacuum"
+			.Curve      "lsystem:curve1"
+			.Thickness  lsystemHeight
+			.Width      lsystemWidth
+			.RoundStart True
+			.RoundEnd   True
+			.GapType    2
+			.Create
+		End With
+	Else
+		For i = 1 To Len(programSource)
+			symbol = Mid(programSource, i, 1)
 
-			With TraceFromCurve
-				.Reset
-				.Name       "solid" & curveIndex
-				.Component  "lsystem"
-				.Material   "Vacuum"
-				.Curve      "3D-Analytical:curve" & curveIndex
-				.Thickness  lsystemHeight
-				.Width      lsystemWidth
-				.RoundStart True
-				.RoundEnd   True
-				.GapType    2
-				.Create
-			End With
-		ElseIf symbol = "f" Then
-			tortoiseAngle = 2*PI * tortoiseA / lsystemAngleN
-			tortoiseX = tortoiseX + lsystemStep * Cos(tortoiseAngle)
-			tortoiseY = tortoiseY + lsystemStep * Sin(tortoiseAngle)
-		ElseIf symbol = "+" Then
-			tortoiseA = tortoiseA + 1
-		ElseIf symbol = "-" Then
-			tortoiseA = tortoiseA - 1
-		ElseIf symbol = "[" Then
-			stackHashX(stackTip) = tortoiseX
-			stackHashY(stackTip) = tortoiseY
-			stackHashA(stackTip) = tortoiseA
-			stackTip = stackTip + 1
-		ElseIf symbol = "]" Then
-			stackTip = stackTip - 1
-			tortoiseX = stackHashX(stackTip)
-			tortoiseY = stackHashY(stackTip)
-			tortoiseA = stackHashA(stackTip)
-		End If
-	Next
+			If symbol = "F" Then
+				curveIndex = curveIndex + 1
+				Polygon3D.Reset
+				Polygon3D.Name  "curve" & curveIndex
+				Polygon3D.Curve "3D-Analytical"
+				Polygon3D.Point tortoiseX, tortoiseY, 0
+
+				tortoiseAngle = 2*PI * tortoiseA / lsystemAngleN
+				tortoiseX = tortoiseX + lsystemStep * Cos(tortoiseAngle)
+				tortoiseY = tortoiseY + lsystemStep * Sin(tortoiseAngle)
+
+				Polygon3D.Point tortoiseX, tortoiseY, 0
+				Polygon3D.Create
+
+				With TraceFromCurve
+					.Reset
+					.Name       "solid" & curveIndex
+					.Component  "lsystem"
+					.Material   "Vacuum"
+					.Curve      "3D-Analytical:curve" & curveIndex
+					.Thickness  lsystemHeight
+					.Width      lsystemWidth
+					.RoundStart True
+					.RoundEnd   True
+					.GapType    2
+					.Create
+				End With
+			ElseIf symbol = "f" Then
+				tortoiseAngle = 2*PI * tortoiseA / lsystemAngleN
+				tortoiseX = tortoiseX + lsystemStep * Cos(tortoiseAngle)
+				tortoiseY = tortoiseY + lsystemStep * Sin(tortoiseAngle)
+			ElseIf symbol = "+" Then
+				tortoiseA = tortoiseA + 1
+			ElseIf symbol = "-" Then
+				tortoiseA = tortoiseA - 1
+			ElseIf symbol = "[" Then
+				stackHashX(stackTip) = tortoiseX
+				stackHashY(stackTip) = tortoiseY
+				stackHashA(stackTip) = tortoiseA
+				stackTip = stackTip + 1
+			ElseIf symbol = "]" Then
+				stackTip = stackTip - 1
+				tortoiseX = stackHashX(stackTip)
+				tortoiseY = stackHashY(stackTip)
+				tortoiseA = stackHashA(stackTip)
+			End If
+		Next
+	End If
 
 	If curveIndex > 1 Then
 		For i = 2 To curveIndex
@@ -150,4 +196,3 @@ Sub Main()
 		Next
 	End If
 End Sub
-
