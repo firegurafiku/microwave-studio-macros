@@ -1,7 +1,7 @@
 ' L-system
 
 Option Explicit
-Sub Main ()
+Sub Main()
 	BeginHide
 	StoreDoubleParameter "lsystem_depth",   4
 	StoreDoubleParameter "lsystem_width",   4
@@ -16,25 +16,27 @@ Sub Main ()
 	SetParameterDescription "lsystem_rules", "F = F-F++F-F"
 	EndHide
 
-	Dim lsystemDepth As Integer
-	Dim lsystemWidth As Double
-	Dim lsystemHeight As Double
-	Dim lsystemStep As Double
-	Dim lsystemAngleN As Integer
-	Dim lsystemAxiom As String
-	Dim lsystemRules As String
-	Dim ruleItem  As String
+	Dim lsystemDepth     As Integer
+	Dim lsystemWidth     As Double
+	Dim lsystemHeight    As Double
+	Dim lsystemStep      As Double
+	Dim lsystemAngleN    As Integer
+	Dim lsystemAxiom     As String
+	Dim lsystemRules     As String
+	Dim ruleItem         As String
 	Dim ruleComponents() As String
-	Dim programSource As String
-	Dim programTarget As String
-	Dim iteration As Integer
-	Dim symbol As String
-	Dim i As Integer
-	Dim x As Double
-	Dim y As Double
-	Dim angleN As Integer
-	Dim angle As Double
-	Dim curveIndex As Integer
+	Dim programSource    As String
+	Dim programTarget    As String
+	Dim iteration        As Integer
+	Dim symbol           As String
+	Dim curveIndex       As Integer
+	Dim tortoiseX        As Double
+	Dim tortoiseY        As Double
+	Dim tortoiseA        As Integer
+	Dim tortoiseAngle    As Double
+
+	' Temporary variables.
+	Dim i                As Integer
 
 	'
 	Dim rulesHash
@@ -84,12 +86,12 @@ Sub Main ()
 		programTarget = ""
 	Next
 
-	x = 0
-	y = 0
-	angleN = 0
-	angle  = 0
 	curveIndex = 0
-	stackTip = 0
+	stackTip   = 0
+	tortoiseX  = 0
+	tortoiseY  = 0
+	tortoiseA  = 0
+	tortoiseAngle = 0
 	For i = 1 To Len(programSource)
 		symbol = Mid(programSource, i, 1)
 
@@ -99,12 +101,13 @@ Sub Main ()
 			Polygon3D.Reset
 			Polygon3D.Name  "curve" & curveIndex
 			Polygon3D.Curve "3D-Analytical"
-			Polygon3D.Point x, y, 0
+			Polygon3D.Point tortoiseX, tortoiseY, 0
 
-			x = x + lsystemStep * Cos(angle)
-			y = y + lsystemStep * Sin(angle)
+			tortoiseAngle = 2*PI * tortoiseA / lsystemAngleN
+			tortoiseX = tortoiseX + lsystemStep * Cos(tortoiseAngle)
+			tortoiseY = tortoiseY + lsystemStep * Sin(tortoiseAngle)
 
-			Polygon3D.Point x, y, 0
+			Polygon3D.Point tortoiseX, tortoiseY, 0
 			Polygon3D.Create
 
 			With TraceFromCurve
@@ -121,24 +124,23 @@ Sub Main ()
 				.Create
 			End With
 		ElseIf symbol = "f" Then
-			x = x + lsystemStep * Cos(angle)
-			y = y + lsystemStep * Sin(angle)
+			tortoiseAngle = 2*PI * tortoiseA / lsystemAngleN
+			tortoiseX = tortoiseX + lsystemStep * Cos(tortoiseAngle)
+			tortoiseY = tortoiseY + lsystemStep * Sin(tortoiseAngle)
 		ElseIf symbol = "+" Then
-			angleN = angleN + 1
-			angle = 2*PI * angleN / lsystemAngleN
+			tortoiseA = tortoiseA + 1
 		ElseIf symbol = "-" Then
-			angleN = angleN - 1
-			angle = 2*PI * angleN / lsystemAngleN
+			tortoiseA = tortoiseA - 1
 		ElseIf symbol = "[" Then
-			stackHashX(stackTip) = x
-			stackHashY(stackTip) = y
-			stackHashA(stackTip) = angleN
+			stackHashX(stackTip) = tortoiseX
+			stackHashY(stackTip) = tortoiseY
+			stackHashA(stackTip) = tortoiseA
 			stackTip = stackTip + 1
 		ElseIf symbol = "]" Then
 			stackTip = stackTip - 1
-			x = stackHashX(stackTip)
-			y = stackHashY(stackTip)
-			angleN = stackHashA(stackTip)
+			tortoiseX = stackHashX(stackTip)
+			tortoiseY = stackHashY(stackTip)
+			tortoiseA = stackHashA(stackTip)
 		End If
 	Next
 
