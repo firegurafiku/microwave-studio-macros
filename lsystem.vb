@@ -98,17 +98,17 @@ Sub Main ()
 			Polygon3D.Create
 
 			With TraceFromCurve
-			     .Reset
-			     .Name "lsystem_solid" & curveIndex
-			     .Component "component1"
-			     .Material "Vacuum"
-			     .Curve "3D-Analytical:lsystem_curve" & curveIndex
-			     .Thickness "0.1"
-			     .Width "0.1"
-			     .RoundStart "True"
-			     .RoundEnd "True"
-			     .GapType "2"
-			     .Create
+				.Reset
+				.Name "lsystem_solid" & curveIndex
+				.Component "component1"
+				.Material "Vacuum"
+				.Curve "3D-Analytical:lsystem_curve" & curveIndex
+				.Thickness "0.1"
+				.Width "0.1"
+				.RoundStart "True"
+				.RoundEnd "True"
+				.GapType "2"
+				.Create
 			End With
 			
 
