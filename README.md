@@ -17,7 +17,7 @@ circumstances.
 ## Installation
 
 To make use of a script, create a new CST's macro with arbitrary name by using
-“Macro -> Make VBA Macro...”. Then just replace generated code by copying and
+“Macro → Make VBA Macro...”. Then just replace generated code by copying and
 pasting. Don't forget to read a comment at the beginning of the script code
 as it may give you some important information.
 
