@@ -2,7 +2,8 @@
 
 Option Explicit
 Sub Main()
-
+	' Maximum value for "temhorn_points" parameter. Increase it if you
+	' need better precision.
 	Const MaxPoints = 1000
 
 	BeginHide
@@ -58,7 +59,8 @@ Sub Main()
 
 	dx = L / points
 
-	' Fucking hack.
+	' Find out the number of points which is *really* used for profile
+	' rasterisation.
 	Dim reallyPoints As Integer
 	reallyPoints = 0
 	For x = 0 To L STEP dx
