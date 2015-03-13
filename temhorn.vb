@@ -1,30 +1,29 @@
-' TEM Horn
+' TEMHorn
 
 Option Explicit
 Sub Main()
-	' Maximum value for "temhorn_points" parameter. Increase it if you
-	' need better precision.
+
 	Const MaxPoints = 1000
 
 	BeginHide
-	StoreDoubleParameter "temhorn_which",   2
-	StoreDoubleParameter "temhorn_points",  100
-	StoreDoubleParameter "temhorn_L",       300
+	StoreDoubleParameter "temhorn_which",   0
+	StoreDoubleParameter "temhorn_points",  30
+	StoreDoubleParameter "temhorn_L",       180
 
 	StoreDoubleParameter "temhorn_Htype",   0
-	StoreDoubleParameter "temhorn_Halpha",  1
+	StoreDoubleParameter "temhorn_Halpha",  0.5
 	StoreDoubleParameter "temhorn_H0",      10
-	StoreDoubleParameter "temhorn_HL",      100
+	StoreDoubleParameter "temhorn_HL",      75
 
 	StoreDoubleParameter "temhorn_Btype",   0
-	StoreDoubleParameter "temhorn_Balpha",  1
+	StoreDoubleParameter "temhorn_Balpha",  0.5
 	StoreDoubleParameter "temhorn_B0",      10
-	StoreDoubleParameter "temhorn_BL",      100
+	StoreDoubleParameter "temhorn_BL",      110
 
 	StoreDoubleParameter "temhorn_Wtype",   0
 	StoreDoubleParameter "temhorn_Walpha",  1
 	StoreDoubleParameter "temhorn_W0",      50
-	StoreDoubleParameter "temhorn_WL",      377
+	StoreDoubleParameter "temhorn_WL",      120*3.1416
 	EndHide
 
 	Dim which  As Integer
@@ -59,8 +58,6 @@ Sub Main()
 
 	dx = L / points
 
-	' Find out the number of points which is *really* used for profile
-	' rasterisation.
 	Dim reallyPoints As Integer
 	reallyPoints = 0
 	For x = 0 To L STEP dx
@@ -86,7 +83,7 @@ Sub Main()
 	End If
 
 	Dim Bpoints(MaxPoints) As Double
-	If which <> 2 Then
+	If which <> 0 Then
 		If Btype = 0 Then
 			i = 0
 			logL0 = Log(BL/B0)
@@ -104,7 +101,7 @@ Sub Main()
 	End If
 
 	Dim Wpoints(MaxPoints) As Double
-	If which <> 1 Then
+	If which <> 2 Then
 		If Wtype = 0 Then
 			i = 0
 			logL0 = Log(WL/W0)
@@ -122,7 +119,7 @@ Sub Main()
 	End If
 
 	Dim sigma0 As Double
-	sigma0 = 377 ' TODO
+	sigma0 = 120*3.1416
 
 	Select Case which
 	Case 1
@@ -131,14 +128,14 @@ Sub Main()
 			Hpoints(i) = Bpoints(i) * Wpoints(i) / sigma0
 			i = i + 1
 		Next
-	Case 2
+	Case 0
 		i = 0
 		For x = 0 To L STEP dx
 			Bpoints(i) = Hpoints(i) * sigma0 / Wpoints(i)
 			i = i + 1
 		Next
-	Case 3
-	i = 0
+	Case 2
+		i = 0
 		For x = 0 To L STEP dx
 			Wpoints(i) = Hpoints(i) * sigma0 / Bpoints(i)
 			i = i + 1
@@ -150,22 +147,63 @@ Sub Main()
 	Dim x1 As Double
 	Dim x2 As Double
 	For i = 0 To reallyPoints-2
-
 		x1 = i*dx
 		x2 = x1 + dx
 		With Polygon3D
-		     .Reset
-		     .Name  "temhorn_leaf"
-		     .Curve "temhorn_curve" & i
-		     .Point x1, -Bpoints(i)/2,   Hpoints(i)/2
-		     .Point x1,  Bpoints(i)/2,   Hpoints(i)/2
-		     .Point x2,  Bpoints(i+1)/2, Hpoints(i+1)/2
-		     .Point x2, -Bpoints(i+1)/2, Hpoints(i+1)/2
-		     .Point x1, -Bpoints(i)/2,   Hpoints(i)/2
-		     .Create
+			.Reset
+			.Name  "temhorn_leaf"
+			.Curve "temhorn_curve" & i
+			.Point x1, -Bpoints(i)/2,   Hpoints(i)/2
+			.Point x1,  Bpoints(i)/2,   Hpoints(i)/2
+			.Point x2,  Bpoints(i+1)/2, Hpoints(i+1)/2
+			.Point x2, -Bpoints(i+1)/2, Hpoints(i+1)/2
+			.Point x1, -Bpoints(i)/2,   Hpoints(i)/2
+			.Create
 		End With
-
 	Next
 
+	For i = 0 To reallyPoints-2
+		With CoverCurve
+			.Reset
+			.Name "leaf" & i
+			.Component "component_antenna"
+			.Material  "PEC"
+			.Curve     "temhorn_curve" & i & ":temhorn_leaf"
+			.Create
+		End With
+	Next
+
+	For i = 0 To reallyPoints-3
+		With Solid
+			.Version 9
+			.Add "component_antenna:leaf0", "component_antenna:leaf" & i+1
+			.Version 1
+		End With
+	Next
+
+	For i = 0 To reallyPoints-2
+		Curve.DeleteCurve "temhorn_curve" & i
+	Next
+
+	With Transform
+		.Reset
+		.Name              "component_antenna"
+		.Origin            "Free"
+		.Center            "0", "0", "0"
+		.PlaneNormal       "0", "0", "1"
+		.MultipleObjects   "True"
+		.GroupObjects      "False"
+		.Repetitions       "1"
+		.MultipleSelection "False"
+		.Destination       ""
+		.Material          ""
+		.Transform         "Shape", "Mirror"
+	End With
+
+	With Solid
+		.Version 9
+		.Add "component_antenna:leaf0", "component_antenna:leaf0_1"
+		.Version 1
+	End With
 End Sub
 
