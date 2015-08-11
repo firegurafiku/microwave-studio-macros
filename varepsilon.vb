@@ -1,4 +1,4 @@
-' VSU\VarEpsilon
+' VarEpsilon
 '
 ' This script fills part of computational space with material varying its
 ' epsilon (electric permittivity). It has quite a lot of parameters and it may
@@ -41,9 +41,9 @@ Option Explicit
 Sub Main()
     BeginHide
     StoreDoubleParameter "varepsilon_Nepsilon", 100
-    StoreDoubleParameter "varepsilon_dx",       0.1
-    StoreDoubleParameter "varepsilon_dy",       0.1
-    StoreDoubleParameter "varepsilon_dz",       0.1
+    StoreDoubleParameter "varepsilon_dx",       1
+    StoreDoubleParameter "varepsilon_dy",       1
+    StoreDoubleParameter "varepsilon_dz",       1
     StoreDoubleParameter "varepsilon_Lx",       10
     StoreDoubleParameter "varepsilon_Ly",       10
     StoreDoubleParameter "varepsilon_Lz",       10
@@ -163,7 +163,7 @@ Sub Main()
         If cnt <> 0 Then
              eps = sum / cnt
              epsIdx = Int((eps - minimumEpsilon) / _
-                      (maximumEpsilon - minimumEpsilon) * Nepsilon)
+                          (maximumEpsilon - minimumEpsilon) * Nepsilon)
              epsilons(epsIdx) = epsilons(epsIdx) + 1
         End If
     Next
@@ -173,62 +173,61 @@ Sub Main()
     ' Then create all materials which were actially used. We need this
     ' preparation step because no solid can reference the material not yet
     ' created.
-    ' FIXME: Material creation parameters are too garbage.
+    ' NOTE: Material creation looks like garbage, but the order matters!
     For i = LBound(epsilons) To UBound(epsilons)
     If epsilons(i) <> 0 Then
-        With Material
-            .Reset
-            .Name                       "material_" & i
-            .Folder                     "varepsilon"
-            .Epsilon                    minimumEpsilon + i*depsilon
-            .Transparency               0
-            .FrqType                    "all"
-            .Type                       "Normal"
-            .SetMaterialUnit            "Hz", "m"
-            ' ---
-            .Mue                        1
-            .ThinPanel                  False
-            .Thickness                  0
-            .Kappa                      0
-            .TanD                       0.0
-            .TanDFreq                   0.0
-            .TanDGiven                  False
-            .TanDModel                  "ConstTanD"
-            .ConstTanDModelOrderEps     1
-            .ReferenceCoordSystem       "Global"
-            .CoordSystemType            "Cartesian"
-            .KappaM                     0
-            .TanDM                      0.0
-            .TanDMFreq                  0.0
-            .TanDMGiven                 False
-            .TanDMModel                 "ConstTanD"
-            .ConstTanDModelOrderMue     1
-            .DispModelEps               "None"
-            .DispModelMue               "None"
-            .DispersiveFittingSchemeEps "1st Order"
-            .DispersiveFittingSchemeMue "1st Order"
-            .UseGeneralDispersionEps    False
-            .UseGeneralDispersionMue    False
-            .NLAnisotropy               False
-            .NLAStackingFactor          1
-            .NLADirectionX              1
-            .NLADirectionY              0
-            .NLADirectionZ              0
-            .Rho                        0
-            .ThermalType                "Normal"
-            .ThermalConductivity        0
-            .HeatCapacity               0
-            .MetabolicRate              0
-            .BloodFlow                  0
-            .VoxelConvection            0
-            .MechanicsType              "Unused"
-            .Colour                     0, 1, 1
-            .Wireframe                  False
-            .Reflection                 False
-            .Allowoutline               True
-            .Transparentoutline         False
-            .Create
-        End With
+    With Material
+        .Reset
+        .Name                       "material_" & i
+        .Folder                     "varepsilon"
+        .FrqType                    "all"
+        .Type                       "Normal"
+        .SetMaterialUnit            "Hz", "m"
+        .Epsilon                    minimumEpsilon + i*depsilon
+        .Mue                        "1"
+        .ThinPanel                  "False"
+        .Thickness                  "0"
+        .Kappa                      "0"
+        .TanD                       "0.0"
+        .TanDFreq                   "0.0"
+        .TanDGiven                  "False"
+        .TanDModel                  "ConstTanD"
+        .ConstTanDModelOrderEps     "1"
+        .ReferenceCoordSystem       "Global"
+        .CoordSystemType            "Cartesian"
+        .KappaM                     "0"
+        .TanDM                      "0.0"
+        .TanDMFreq                  "0.0"
+        .TanDMGiven                 "False"
+        .TanDMModel                 "ConstTanD"
+        .ConstTanDModelOrderMue     "1"
+        .DispModelEps               "None"
+        .DispModelMue               "None"
+        .DispersiveFittingSchemeEps "1st Order"
+        .DispersiveFittingSchemeMue "1st Order"
+        .UseGeneralDispersionEps    "False"
+        .UseGeneralDispersionMue    "False"
+        .NLAnisotropy               "False"
+        .NLAStackingFactor          "1"
+        .NLADirectionX              "1"
+        .NLADirectionY              "0"
+        .NLADirectionZ              "0"
+        .Rho                        "0"
+        .ThermalType                "Normal"
+        .ThermalConductivity        "0"
+        .HeatCapacity               "0"
+        .MetabolicRate              "0"
+        .BloodFlow                  "0"
+        .VoxelConvection            "0"
+        .MechanicsType              "Unused"
+        .Colour                     "0", "1", "1"
+        .Wireframe                  "False"
+        .Reflection                 "False"
+        .Allowoutline               "True"
+        .Transparentoutline         "False"
+        .Transparency               "0"
+        .Create
+    End With
     End If
     Next
 
@@ -283,4 +282,3 @@ Sub Main()
     Next
     Next
 End Sub
-
