@@ -94,7 +94,9 @@ Sub Main()
     Dim xc, yc, zc, ec As Double
 
     ' FIXME: File may remain open in case of error.
+    On Error Goto ExitLabel
     Open "varepsilon_data.txt" For Input As #1
+
     While Not EOF(1)
         Line Input #1, sLine
         sArr = Split(sLine)
@@ -281,4 +283,7 @@ Sub Main()
     Next
     Next
     Next
+
+ExitLabel:
+    ' Nothing to do.
 End Sub
