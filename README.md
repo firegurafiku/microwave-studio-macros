@@ -21,6 +21,10 @@ To make use of a script, create a new CST's macro with arbitrary name by using
 pasting. Don't forget to read a comment at the beginning of the script code
 as it may give you some important information.
 
+There is another option of installing all of scripts at once: just copy “VSU”
+subdirectory under “%PROGRAM_FILES%\CST STUDIO SUITE 2012\Library\Macros” or
+simular path, depending on your installation.
+
 ## Authors
 
 These scripts were developed by me, Pavel Kretov, and provides under the terms
