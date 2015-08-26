@@ -27,7 +27,9 @@ simular path, depending on your installation.
 
 ## Authors
 
-These scripts were developed by me, Pavel Kretov, and provides under the terms
-of MIT License. So use can use them mostly as you wish, but I'd very appreciate
-if you let me know of any bugs found.
+Most of these scripts were developed by me, Pavel Kretov, and provides under
+the terms of MIT License. So use can use them mostly as you wish, but I'd
+very appreciate if you let me know of any bugs found.
+
+Some substantial work is also credited to Nikolay Lysenko.
 
