@@ -7,9 +7,9 @@
 ' The part of space to be filled with material is bounded by the rectilinear
 ' cuboid (in local coordinate system):
 '
-'    0 <= x <= Lx,
-'    0 <= y <= Ly,
-'    0 <= z <= Lz.
+'     0 <= x <= Lx,
+'     0 <= y <= Ly,
+'     0 <= z <= Lz.
 '
 ' This space gets discretized with spatial steps dx, dy and dz, producing
 ' a number of small cells. Each cell is assigned to material separately. The
