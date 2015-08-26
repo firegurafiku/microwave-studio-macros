@@ -2,8 +2,8 @@ Various macros for CST Microwave Studio
 =======================================
 
 This project contains some scripts in Visual Basic for Applications which were
-useful for me during my PhD research at Voronezh state university. I hope they
-can be useful for somebody too.
+useful for me during my PhD research at Voronezh State University. I hope they
+can be useful for somebody else too.
 
 ## Preface
 
