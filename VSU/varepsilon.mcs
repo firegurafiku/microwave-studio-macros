@@ -1,4 +1,5 @@
 ' VarEpsilon
+' *** Be careful with the line above as CST uses it as a macro name.
 '
 ' This script fills part of computational space with material varying its
 ' epsilon (electric permittivity). It has quite a lot of parameters and it may

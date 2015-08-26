@@ -1,5 +1,5 @@
 ' Vivaldi
-' !!! Do not change the line above !!!
+' *** Be careful with the line above as CST uses it as a macro name.
 
 Option Explicit
 Sub Main ()
