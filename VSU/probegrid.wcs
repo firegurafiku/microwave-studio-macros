@@ -1,0 +1,53 @@
+' VSU\probegrid
+'
+' Generates a rectangular grid of E-field probes in plane parallel to Oxy.
+' This script was designed for a particular purpose of modelling TEM horn
+' antennas and isn't flexible at all. It just does the following things:
+'
+'     - moves to a plane parallel to Oxy and crossing Z axis in a point 'z0';
+'     - in this plane takes a rectangle -Lx/2 <= x <= Lx/2, -Ly/2 <= y <= Ly/2;
+'     - in this rectangle evenly distributes Nx * Ny E-field probes.
+'
+' Unfortunately, it's not possible to easily move the rectangle of generated
+' probes. Using CST's local coordinate system facility doesn't help either,
+' which may be condidered that a bug in CST.
+'
+Option Explicit
+Sub Main ()
+
+    BeginHide
+    StoreDoubleParameter "probegrid_Lx", 10
+    StoreDoubleParameter "probegrid_Ly", 10
+    StoreDoubleParameter "probegrid_Nx", 10
+    StoreDoubleParameter "probegrid_Ny", 10
+    StoreDoubleParameter "probegrid_z0",  0
+    EndHide
+
+    Dim Lx, Ly, Nx, Ny, z0 As Double
+    Lx = RestoreDoubleParameter("probegrid_Lx")
+    Ly = RestoreDoubleParameter("probegrid_Ly")
+    Nx = RestoreDoubleParameter("probegrid_Nx")
+    Ny = RestoreDoubleParameter("probegrid_Ny")
+    z0 = RestoreDoubleParameter("probegrid_z0")
+
+    Dim dx, dy As Double
+    dx = Lx / (Nx-1)
+    dy = Ly / (Ny-1)
+
+    Dim i, j As Integer
+    For i = 0 To Nx-1
+    For j = 0 To Ny-1
+        With Probe
+            .Reset
+            .Name        "E-field probegrid (" & i & "; " & j & ")"
+            .Field       "Efield"
+            .Orientation "All"
+            .Xpos        i * dx - Lx/2
+            .Ypos        j * dy - Ly/2
+            .Zpos        z0
+            .Create
+        End With
+    Next
+    Next
+End Sub
+
