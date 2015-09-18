@@ -34,6 +34,11 @@
 ' object named 'varepsilon:cutoff', to shape the whole object. It must exist
 ' before this script is called.
 '
+' Final note, due to CST's stupid bug, don't forget to save your project file
+' before you execute the script, standalone or as part of history. Just
+' press Ctrl+S before macro execution and right after you have opened your
+' project file.
+'
 ' Copyright (c) 2015, Pavel Kretov.
 ' Provided under the terms of MIT license. This script was created as a part
 ' of PhD research in Voronezh State University, Russia.
