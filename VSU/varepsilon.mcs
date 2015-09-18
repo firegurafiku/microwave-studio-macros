@@ -16,19 +16,19 @@
 ' a number of small cells. Each cell is assigned to material separately. The
 ' exact distribution of epsilon cannot be passed as a parameter. Instead,
 ' script reads file with name 'varepsilon_data.txt', located in the CST project
-' directory. Each line of file is expected to contain for space-separated
+' directory. Each line of file is expected to contain four space-separated
 ' fields:
 '
 '     <X> <Y> <Z> <EPSILON>
 '
-' which describe discrete mapping from coordinated to permettivity. The file
-' *must* contain an exessive number of lines because each cell is filled by
-' material which epsilon is the average of epsilons of all points which are
-' located within that cell. Points read from file are additionally shifted by
-' x0, y0, z0 offsets.
+' which describe discrete mapping from coordinates to permittivity. The file
+' *must* contain an excessive number of lines because each cell is filled by
+' material which epsilon equal to the average of epsilons of all points which
+' are located within that cell. Points read from file are additionally shifted
+' by x0, y0, z0 offsets.
 '
-' Material permittivity are also quantized, the number of levels can be
-' specified Nepsilon parameter.
+' Material permittivity is also quantized, the number of levels can be
+' specified by Nepsilon parameter.
 '
 ' At the final part of processing, all cells are intersected with a solid
 ' object named 'varepsilon:cutoff', to shape the whole object. It must exist
