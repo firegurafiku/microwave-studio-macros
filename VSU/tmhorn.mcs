@@ -1,0 +1,158 @@
+' TM-horn
+' This script generates simple TM horn with rectangular waveguide attached.
+' The waveguide is directed toward Z axis, its size is B1 × H1. The horn
+' apperture size is B2 × H2. The whole structure is drawn with planar PEC
+' polygons.
+'
+' Copyright (c) 2015, Pavel Kretov.
+' Provided under the terms of MIT license. This script was created as a part
+' of PhD research in Voronezh State University, Russia.
+
+Option Explicit
+Sub Main () 
+    BeginHide
+    StoreDoubleParameter "tmhorn_B1", 1.0
+    StoreDoubleParameter "tmhorn_B2", 5.0
+    StoreDoubleParameter "tmhorn_H1", 1.0
+    StoreDoubleParameter "tmhorn_H2", 5.0
+    StoreDoubleParameter "tmhorn_L1", 4.0
+    StoreDoubleParameter "tmhorn_L2", 4.0
+    EndHide
+
+    Dim B1, B2, H1, H2, L1, L2 As Double
+    B1 = RestoreDoubleParameter("tmhorn_B1")
+    B2 = RestoreDoubleParameter("tmhorn_B2")
+    H1 = RestoreDoubleParameter("tmhorn_H1")
+    H2 = RestoreDoubleParameter("tmhorn_H2")
+    L1 = RestoreDoubleParameter("tmhorn_L1")
+    L2 = RestoreDoubleParameter("tmhorn_L2")
+
+    With Polygon3D
+         .Reset
+         .Version 10
+         .Name "tmhorn_polygon1"
+         .Curve "thhorn_curve"
+         .Point -B1/2, -H1/2, 0
+         .Point -B1/2, -H1/2, L1
+         .Point  B1/2, -H1/2, L1
+         .Point  B1/2, -H1/2, 0
+         .Point -B1/2, -H1/2, 0
+         .Create
+
+         .Reset
+         .Version 10
+         .Name "tmhorn_polygon2"
+         .Curve "thhorn_curve"
+         .Point -B1/2,  H1/2, 0
+         .Point -B1/2,  H1/2, L1
+         .Point  B1/2,  H1/2, L1
+         .Point  B1/2,  H1/2, 0
+         .Point -B1/2,  H1/2, 0
+         .Create
+
+         .Reset
+         .Version 10
+         .Name "tmhorn_polygon3"
+         .Curve "thhorn_curve"
+         .Point -B1/2, -H1/2, 0
+         .Point -B1/2, -H1/2, L1
+         .Point -B1/2,  H1/2, L1
+         .Point -B1/2,  H1/2, 0
+         .Point -B1/2, -H1/2, 0
+         .Create
+
+         .Reset
+         .Version 10
+         .Name "tmhorn_polygon4"
+         .Curve "thhorn_curve"
+         .Point  B1/2, -H1/2, 0
+         .Point  B1/2, -H1/2, L1
+         .Point  B1/2,  H1/2, L1
+         .Point  B1/2,  H1/2, 0
+         .Point  B1/2, -H1/2, 0
+         .Create
+
+         .Reset
+         .Version 10
+         .Name "tmhorn_polygon5"
+         .Curve "thhorn_curve"
+         .Point -B1/2, -H1/2, L1
+         .Point -B2/2, -H2/2, L1+L2
+         .Point  B2/2, -H2/2, L1+L2
+         .Point  B1/2, -H1/2, L1
+         .Point -B1/2, -H1/2, L1
+         .Create
+
+         .Reset
+         .Version 10
+         .Name "tmhorn_polygon6"
+         .Curve "thhorn_curve"
+         .Point -B1/2,  H1/2, L1
+         .Point -B2/2,  H2/2, L1+L2
+         .Point  B2/2,  H2/2, L1+L2
+         .Point  B1/2,  H1/2, L1
+         .Point -B1/2,  H1/2, L1
+         .Create
+
+         .Reset
+         .Version 10
+         .Name "tmhorn_polygon7"
+         .Curve "thhorn_curve"
+         .Point -B1/2, -H1/2, L1
+         .Point -B2/2, -H2/2, L1+L2
+         .Point -B2/2,  H2/2, L1+L2
+         .Point -B1/2,  H1/2, L1
+         .Point -B1/2, -H1/2, L1
+         .Create
+
+         .Reset
+         .Version 10
+         .Name "tmhorn_polygon8"
+         .Curve "thhorn_curve"
+         .Point  B1/2, -H1/2, L1
+         .Point  B2/2, -H2/2, L1+L2
+         .Point  B2/2,  H2/2, L1+L2
+         .Point  B1/2,  H1/2, L1
+         .Point  B1/2, -H1/2, L1
+         .Create
+    End With
+
+    With CoverCurve
+        .Reset
+        .Component "tmhorn_component"
+        .Material  "PEC"
+
+        .Name  "tmhorn_solid1"
+        .Curve "thhorn_curve:tmhorn_polygon1"
+        .Create
+
+        .Name  "tmhorn_solid2"
+        .Curve "thhorn_curve:tmhorn_polygon2"
+        .Create
+
+        .Name  "tmhorn_solid3"
+        .Curve "thhorn_curve:tmhorn_polygon3"
+        .Create
+
+        .Name  "tmhorn_solid4"
+        .Curve "thhorn_curve:tmhorn_polygon4"
+        .Create
+
+        .Name  "tmhorn_solid5"
+        .Curve "thhorn_curve:tmhorn_polygon5"
+        .Create
+
+        .Name  "tmhorn_solid6"
+        .Curve "thhorn_curve:tmhorn_polygon6"
+        .Create
+
+        .Name  "tmhorn_solid7"
+        .Curve "thhorn_curve:tmhorn_polygon7"
+        .Create
+
+        .Name  "tmhorn_solid8"
+        .Curve "thhorn_curve:tmhorn_polygon8"
+        .Create
+    End With
+End Sub
+
