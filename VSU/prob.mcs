@@ -1,0 +1,147 @@
+' Generates a number of far-field probes, lying on a two circles.
+'
+' Copyright (c) Nikolay Lysenko, 2015.
+'
+
+Option Explicit
+Sub Main()
+    BeginHide
+    StoreDoubleParameter "prob_phi_min",  90
+    StoreDoubleParameter "prob_phi_max",  -90
+    StoreDoubleParameter "prob_dphi",     5
+    StoreDoubleParameter "prob_teta_min", -90
+    StoreDoubleParameter "prob_teta_max", 90
+    StoreDoubleParameter "prob_dteta",    5
+    StoreDoubleParameter "prob_rad",      1000
+    EndHide
+
+    Dim prob_phi_min  As Integer
+    Dim prob_phi_max  As Integer
+    Dim prob_dphi     As Integer
+    Dim prob_teta_max As Double
+    Dim prob_teta_min As Double
+    Dim prob_dteta    As Double
+    Dim prob_rad      As Double
+    prob_phi_min  = RestoreDoubleParameter("prob_phi_min")
+    prob_phi_max  = RestoreDoubleParameter("prob_phi_max")
+    prob_dphi     = RestoreDoubleParameter("prob_dphi")
+    prob_teta_min = RestoreDoubleParameter("prob_teta_min")
+    prob_teta_max = RestoreDoubleParameter("prob_teta_max")
+    prob_dteta    = RestoreDoubleParameter("prob_dteta")
+    prob_rad      = RestoreDoubleParameter("prob_rad")
+
+    Dim phi As Double
+    Dim teta As Double
+    Dim x As Double
+    Dim y As Double
+    Dim z As Double
+
+    For phi = prob_phi_min To prob_phi_max STEP prob_dphi
+        x = prob_rad * Cos(0) * Cos(phi * pi / 180)
+        y = prob_rad * Cos(0) * Sin(phi * pi / 180)
+        z = prob_rad * Sin(0)
+        With Probe
+         .Reset
+         .Name "E-Farf (Z; 30000; 0; " & phi & ")"
+         .Field "EFarfield"
+         .Orientation "Z"
+         .SetPosition1 x
+         .SetPosition2 y
+         .SetPosition3 z
+         .SetSampling "16.0"
+         .SetCoordinateSystemType "Cartesian"
+         .Create
+        End With
+    Next
+
+    For teta = prob_teta_min To prob_teta_max STEP prob_dteta
+        x = prob_rad * Cos(teta * pi / 180) * Cos(0)
+        y = prob_rad * Cos(teta * pi / 180) * Sin(0)
+        z = prob_rad * Sin(teta * pi / 180)
+        With Probe
+         .Reset
+         .Name "E-Farf (Z; 30000; " & teta & "; 0)"
+         .Field "EFarfield"
+         .Orientation "Z"
+         .SetPosition1 x
+         .SetPosition2 y
+         .SetPosition3 z
+         .SetSampling "16.0"
+         .SetCoordinateSystemType "Cartesian"
+         .Create
+        End With
+    Next
+
+    For phi = prob_phi_min To prob_phi_max STEP prob_dphi
+        x = prob_rad * Cos(0) * Cos(phi * pi / 180)
+        y = prob_rad * Cos(0) * Sin(phi * pi / 180)
+        z = prob_rad * Sin(0)
+        With Probe
+         .Reset
+         .Name "E-Farf (X; 30000; 0; " & phi & ")"
+         .Field "EFarfield"
+         .Orientation "X"
+         .SetPosition1 x
+         .SetPosition2 y
+         .SetPosition3 z
+         .SetSampling "16.0"
+         .SetCoordinateSystemType "Cartesian"
+         .Create
+        End With
+    Next
+
+    For teta = prob_teta_min To prob_teta_max STEP prob_dteta
+        x = prob_rad * Cos(teta * pi / 180) * Cos(0)
+        y = prob_rad * Cos(teta * pi / 180) * Sin(0)
+        z = prob_rad * Sin(teta * pi / 180)
+        With Probe
+         .Reset
+         .Name "E-Farf (X; 30000; " & teta & "; 0)"
+         .Field "EFarfield"
+         .Orientation "X"
+         .SetPosition1 x
+         .SetPosition2 y
+         .SetPosition3 z
+         .SetSampling "16.0"
+         .SetCoordinateSystemType "Cartesian"
+         .Create
+        End With
+    Next
+
+    For phi = prob_phi_min To prob_phi_max STEP prob_dphi
+        x = prob_rad * Cos(0) * Cos(phi * pi / 180)
+        y = prob_rad * Cos(0) * Sin(phi * pi / 180)
+        z = prob_rad * Sin(0)
+        With Probe
+         .Reset
+         .Name "E-Farf (Y; 30000; 0; " & phi & ")"
+         .Field "EFarfield"
+         .Orientation "Y"
+         .SetPosition1 x
+         .SetPosition2 y
+         .SetPosition3 z
+         .SetSampling "16.0"
+         .SetCoordinateSystemType "Cartesian"
+         .Create
+        End With
+    Next
+
+    For teta = prob_teta_min To prob_teta_max STEP prob_dteta
+        x = prob_rad * Cos(teta * pi / 180) * Cos(0)
+        y = prob_rad * Cos(teta * pi / 180) * Sin(0)
+        z = prob_rad * Sin(teta * pi / 180)
+        With Probe
+         .Reset
+         .Name "E-Farf (Y; 30000; " & teta & "; 0)"
+         .Field "EFarfield"
+         .Orientation "Y"
+         .SetPosition1 x
+         .SetPosition2 y
+         .SetPosition3 z
+         .SetSampling "16.0"
+         .SetCoordinateSystemType "Cartesian"
+         .Create
+        End With
+    Next
+End Sub
+
