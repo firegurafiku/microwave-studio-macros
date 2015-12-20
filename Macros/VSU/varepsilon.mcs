@@ -99,9 +99,12 @@ Sub Main()
     Dim ix, iy, iz     As Integer
     Dim xc, yc, zc, ec As Double
 
+    Dim baseName As String
+    baseName = GetProjectPath("Project")
+
     ' FIXME: File may remain open in case of error.
-    On Error Goto ExitLabel
-    Open "varepsilon_data.txt" For Input As #1
+    On Error GoTo ExitLabel
+    Open baseName & "_varepsilon.txt" For Input As #1
 
     While Not EOF(1)
         Line Input #1, sLine
