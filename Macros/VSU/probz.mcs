@@ -1,0 +1,85 @@
+
+Option Explicit
+Sub Main()
+    BeginHide
+    StoreDoubleParameter "probz_phi_min",    -90
+    StoreDoubleParameter "probz_phi_max",     90
+    StoreDoubleParameter "probz_delta_phi",   5
+    StoreDoubleParameter "probz_theta_min",  -90
+    StoreDoubleParameter "probz_theta_max",   90
+    StoreDoubleParameter "probz_delta_theta", 5
+    StoreDoubleParameter "probz_radius",      1000
+    EndHide
+
+    Dim pmin, pmax, dp As Double
+    Dim tmin, tmax, dt As Double
+    Dim r              As Double
+    pmin = RestoreDoubleParameter("probz_phi_min")
+    pmax = RestoreDoubleParameter("probz_phi_max")
+    dp   = RestoreDoubleParameter("probz_delta_phi")
+    tmin = RestoreDoubleParameter("probz_theta_min")
+    tmax = RestoreDoubleParameter("probz_theta_max")
+    dt   = RestoreDoubleParameter("probz_delta_theta")
+    r    = RestoreDoubleParameter("probz_radius")
+
+    Dim p, t    As Double
+    Dim x, y, z As Double
+
+    t = 0
+    For p = pmin To pmax STEP dp
+		x = r * Sin(p * pi / 180)
+        z = r * Cos(p * pi / 180)
+        y = 0
+
+        With Probe
+         .Reset
+         .Field        "EFarfield"
+         .SetSampling  "16.0"
+         .SetCoordinateSystemType "Cartesian"
+         .SetPosition1 x
+         .SetPosition2 y
+         .SetPosition3 z
+
+         .Name "probz_E_farfield_X (" & r & "; " & t & "; " & p & ")"
+         .Orientation "X"
+         .Create
+
+         .Name "probz_E_farfield_Y (" & r & "; " & t & "; " & p & ")"
+         .Orientation "Y"
+         .Create
+
+         .Name "probz_E_farfield_Z (" & r & "; " & t & "; " & p & ")"
+         .Orientation "Z"
+         .Create
+        End With
+    Next
+
+    p = 0
+    For t = tmin To tmax STEP dt
+		y = r * Sin(t * pi/ 180)
+        z = r * Cos(t * pi/ 180)
+        x = 0
+
+        With Probe
+         .Reset
+         .Field        "EFarfield"
+         .SetSampling  "16.0"
+         .SetCoordinateSystemType "Cartesian"
+         .SetPosition1 x
+         .SetPosition2 y
+         .SetPosition3 z
+
+         .Name "probz_E_farfield_X (" & r & "; " & t & "; " & p & ")"
+         .Orientation "X"
+         .Create
+
+         .Name "probz_E_farfield_Y (" & r & "; " & t & "; " & p & ")"
+         .Orientation "Y"
+         .Create
+
+         .Name "probz_E_farfield_Z (" & r & "; " & t & "; " & p & ")"
+         .Orientation "Z"
+         .Create
+        End With
+    Next
+End Sub
