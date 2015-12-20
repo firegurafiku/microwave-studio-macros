@@ -1,0 +1,141 @@
+' Creates TEM horn with arbitrary profile functions, and a feeding line.
+' This script draws a TEM-horn, directed to Z axis, with vertical profile H(z)
+' and horizontal profile B(z). These profile functions are specified
+' symbolically as the parameter *descriptions*, where '&' token represents
+' varying parameter 'z'.
+'
+' Copyright (c) Pavel Kretov, 2015.
+' Provided under the terms of MIT license. This script was created as a part
+' of PhD research at Voronezh State University, Russia.
+
+Option Explicit
+Sub Main()
+    BeginHide
+    StoreDoubleParameter "temhorn2_line_length", 20
+    StoreDoubleParameter "temhorn2_length",      50
+    StoreDoubleParameter "temhorn2_points",      10
+    StoreDoubleParameter "temhorn2_Hfunc",        0
+    StoreDoubleParameter "temhorn2_Bfunc",        0
+	
+	' 
+	SetParameterDescription "temhorn2_Hfunc", "0.2 * (&)"
+	SetParameterDescription "temhorn2_Bfunc", "0.5 * (&)"
+    EndHide
+
+    Dim L, M As Double
+    Dim N As Integer
+    L = RestoreParameter("temhorn2_length")
+    M = RestoreParameter("temhorn2_line_length")
+    N = RestoreParameter("temhorn2_points")
+
+    Dim Hfunc, Bfunc As String
+    Hfunc = GetParameterDescription("temhorn2_Hfunc")
+    Bfunc = GetParameterDescription("temhorn2_Bfunc")
+
+	' Make CST think we use these parameters to get F7 updates on change.
+    RestoreParameter("temhorn2_Hfunc")
+    RestoreParameter("temhorn2_Bfunc")
+
+	' First, create feeding line.
+    Dim H, B As Double
+    H = Abs(Evaluate(Replace(Hfunc, "&", "(0)")))
+    B = Abs(Evaluate(Replace(Bfunc, "&", "(0)")))
+	
+    With Polygon3D
+        .Reset
+        .Version 10
+        .Name  "line_1"
+        .Curve "temhorn2"
+        .Point -B/2,  H/2, -M
+        .Point -B/2,  H/2,  0
+        .Point  B/2,  H/2,  0
+        .Point  B/2,  H/2, -M
+        .Point -B/2,  H/2, -M
+        .Create
+
+        .Reset
+        .Version 10
+        .Name  "line_2"
+        .Curve "temhorn2"
+        .Point -B/2, -H/2, -M
+        .Point -B/2, -H/2,  0
+        .Point  B/2, -H/2,  0
+        .Point  B/2, -H/2, -M
+        .Point -B/2, -H/2, -M
+        .Create
+    End With
+
+    With CoverCurve
+        .Reset
+        .Name      "line_1"
+        .Component "temhorn2"
+        .Material  "PEC"
+        .Curve     "temhorn2:line_1"
+        .Create
+
+        .Reset
+        .Name      "line_2"
+        .Component "temhorn2"
+        .Material  "PEC"
+        .Curve     "temhorn2:line_2"
+        .Create
+    End With
+
+	' Next, create the antenna itself.
+    Dim i As Integer
+    Dim z, dz, zprev, Hprev, Bprev As Double
+    dz = L / N
+
+    For i=0 To N
+        z = i*dz
+
+        H = Abs(Evaluate(Replace(Hfunc, "&", "(" & Str(z) & ")")))
+        B = Abs(Evaluate(Replace(Bfunc, "&", "(" & Str(z) & ")")))
+
+        If i <> 0 Then
+            With Polygon3D
+                .Reset
+                .Version 10
+                .Name  "topleaf_" & i
+                .Curve "temhorn2"
+                .Point -Bprev/2,  Hprev/2, zprev
+                .Point     -B/2,      H/2,     z
+                .Point      B/2,      H/2,     z
+                .Point  Bprev/2,  Hprev/2, zprev
+                .Point -Bprev/2,  Hprev/2, zprev
+                .Create
+
+                .Reset
+                .Version 10
+                .Name  "botleaf_" & i
+                .Curve "temhorn2"
+                .Point -Bprev/2, -Hprev/2, zprev
+                .Point     -B/2,     -H/2,     z
+                .Point      B/2,     -H/2,     z
+                .Point  Bprev/2, -Hprev/2, zprev
+                .Point -Bprev/2, -Hprev/2, zprev
+                .Create
+            End With
+
+            With CoverCurve
+                .Reset
+                .Name      "topleaf_" & i
+                .Component "temhorn2"
+                .Material  "PEC"
+                .Curve     "temhorn2:topleaf_" & i
+                .Create
+
+                .Reset
+                .Name      "botleaf_" & i
+                .Component "temhorn2"
+                .Material  "PEC"
+                .Curve     "temhorn2:botleaf_" & i
+                .Create
+            End With
+        End If
+
+        zprev = z
+        Hprev = H
+        Bprev = B
+    Next
+End Sub
