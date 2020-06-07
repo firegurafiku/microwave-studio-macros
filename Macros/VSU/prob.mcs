@@ -1,13 +1,11 @@
-' Generates a number of far-field probes, lying on a two circles.
-'
 ' Copyright (c) Nikolay Lysenko, 2015.
 '
 
 Option Explicit
 Sub Main()
     BeginHide
-    StoreDoubleParameter "prob_phi_min",  90
-    StoreDoubleParameter "prob_phi_max",  -90
+    StoreDoubleParameter "prob_phi_min",  -90
+    StoreDoubleParameter "prob_phi_max",  90
     StoreDoubleParameter "prob_dphi",     5
     StoreDoubleParameter "prob_teta_min", -90
     StoreDoubleParameter "prob_teta_max", 90
@@ -42,7 +40,7 @@ Sub Main()
         z = prob_rad * Sin(0)
         With Probe
          .Reset
-         .Name "E-Farf (Z; 30000; 0; " & phi & ")"
+         .Caption "E-Farf (Z; " & phi & "; " & teta & ")"
          .Field "EFarfield"
          .Orientation "Z"
          .SetPosition1 x
@@ -60,7 +58,7 @@ Sub Main()
         z = prob_rad * Sin(teta * pi / 180)
         With Probe
          .Reset
-         .Name "E-Farf (Z; 30000; " & teta & "; 0)"
+         .Caption "E-Farf (Z; " & phi & "; " & teta & ")"
          .Field "EFarfield"
          .Orientation "Z"
          .SetPosition1 x
@@ -78,7 +76,7 @@ Sub Main()
         z = prob_rad * Sin(0)
         With Probe
          .Reset
-         .Name "E-Farf (X; 30000; 0; " & phi & ")"
+         .Caption "E-Farf (X; " & phi & "; " & teta & ")"
          .Field "EFarfield"
          .Orientation "X"
          .SetPosition1 x
@@ -96,7 +94,7 @@ Sub Main()
         z = prob_rad * Sin(teta * pi / 180)
         With Probe
          .Reset
-         .Name "E-Farf (X; 30000; " & teta & "; 0)"
+         .Caption "E-Farf (X; " & phi & "; " & teta & ")"
          .Field "EFarfield"
          .Orientation "X"
          .SetPosition1 x
@@ -114,7 +112,7 @@ Sub Main()
         z = prob_rad * Sin(0)
         With Probe
          .Reset
-         .Name "E-Farf (Y; 30000; 0; " & phi & ")"
+         .Caption "E-Farf (Y; " & phi & "; " & teta & ")"
          .Field "EFarfield"
          .Orientation "Y"
          .SetPosition1 x
@@ -132,7 +130,7 @@ Sub Main()
         z = prob_rad * Sin(teta * pi / 180)
         With Probe
          .Reset
-         .Name "E-Farf (Y; 30000; " & teta & "; 0)"
+         .Caption "E-Farf (Y; " & phi & "; " & teta & ")"
          .Field "EFarfield"
          .Orientation "Y"
          .SetPosition1 x
